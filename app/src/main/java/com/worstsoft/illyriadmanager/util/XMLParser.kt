@@ -1,16 +1,16 @@
-package com.worstsoft.illyriadmanager
+package com.worstsoft.illyriadmanager.util
 
+import android.util.Log
+import com.worstsoft.illyriadmanager.models.NotificationModel
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import java.io.ByteArrayInputStream
-import java.io.InputStream
 
 class XMLParser {
-
     companion object {
+        private val TAG: String = "XMLParser"
         private val xmlPullParser: XmlPullParser = XmlPullParserFactory.newInstance().newPullParser()
         private val httpClient: HttpClient = HttpClient(CIO)
         private val NOTIFICATION_HOSTNAME: String = "https://elgea.illyriad.co.uk/external/notificationsapi/elgea-NOTIF-"
@@ -36,6 +36,7 @@ class XMLParser {
                 when (eventType) {
                     XmlPullParser.START_TAG -> {
                         when (xmlPullParser.name) {
+                            "errormsg" -> throw NoSuchFieldException("Error: API Key Invalid")
                             "notification" -> {
                                 if (xmlPullParser.attributeCount == 0) {
                                     notificationId = null
@@ -108,14 +109,16 @@ class XMLParser {
                     }
                     XmlPullParser.END_TAG -> {
                         if (xmlPullParser.name.equals("notification") && xmlPullParser.attributeCount == -1) {
-                            array.add(NotificationModel(
+                            array.add(
+                                NotificationModel(
                                 notificationId = notificationId!!.toInt(),
                                 notificationType = NotificationModel.NotificationType.enumFromInt(notificationType!!.toInt()),
                                 notificationOverallType = NotificationModel.NotificationOverallType.enumFromInt(notificationOverallType!!.toInt()),
                                 notificationTownId = notificationTownId!!.toInt(),
                                 notificationDetail = notificationDetail!!,
                                 notificationDateAndTime = notificationDateAndTime!!
-                            ))
+                            )
+                            )
                         }
                     }
                 }

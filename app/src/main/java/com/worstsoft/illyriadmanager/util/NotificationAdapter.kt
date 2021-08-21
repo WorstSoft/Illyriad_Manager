@@ -1,14 +1,13 @@
-package com.worstsoft.illyriadmanager
+package com.worstsoft.illyriadmanager.util
 
-import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.worstsoft.illyriadmanager.R
+import com.worstsoft.illyriadmanager.models.NotificationModel
 
 class NotificationAdapter(private val data: List<NotificationModel>) : RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
 
@@ -25,6 +24,7 @@ class NotificationAdapter(private val data: List<NotificationModel>) : RecyclerV
                 NotificationModel.NotificationOverallType.DIPLOMATIC -> R.drawable.notif_five
                 NotificationModel.NotificationOverallType.ALLIANCE -> R.drawable.notif_six
                 NotificationModel.NotificationOverallType.MAGIC -> R.drawable.notif_eight
+                NotificationModel.NotificationOverallType.QUEST -> R.drawable.notif_nine
                 NotificationModel.NotificationOverallType.INVALID -> R.drawable.illyriad_manager
             }
         )
@@ -32,9 +32,13 @@ class NotificationAdapter(private val data: List<NotificationModel>) : RecyclerV
         holder.type.text = when (data[position].notificationType) {
             NotificationModel.NotificationType.BUILD_AND_CONSTRUCT_DONE -> "Construction Done"
             NotificationModel.NotificationType.RESEARCH_DONE -> "Research Done"
+            NotificationModel.NotificationType.TRADE_OFFER_ACCEPT -> "Trade Offer Accepted"
             NotificationModel.NotificationType.CARAVAN_OUT -> "Caravan/Cotter Going Out"
             NotificationModel.NotificationType.TRADE_CARAVAN_IN -> "Trade Caravan Going In"
+            NotificationModel.NotificationType.ALLIANCE_INVITATION -> "An Alliance Invitation"
             NotificationModel.NotificationType.HARVEST_CARAVAN_IN -> "Harvest Caravan Going In"
+            NotificationModel.NotificationType.QUEST_ACCEPTED -> "Quest Accepted"
+            NotificationModel.NotificationType.HARVEST_CARAVAN_DISAPPOINTED -> "Harvest Caravan/Cotter Disappointed"
             NotificationModel.NotificationType.HARVEST_CARAVAN_START -> "Harvest Caravan/Cotter Start Harvesting"
             NotificationModel.NotificationType.INVALID_NOTIFICATION -> "ERROR : TYPE NOT FOUND"
         }
