@@ -5,7 +5,6 @@
 ## Incoming Features
 * Adding different tab for combat reports and mail
 * Ability for seeing the world map (Unlikely)
-* Using username and password instead of API key (Unlikely)
 * Notification that will refresh automatically (Very unlikely but if it happens the other unlikely things listed here might be added)
 
 You can add suggestion [here](https://github.com/WorstSoft/Illyriad_Manager/issues)
