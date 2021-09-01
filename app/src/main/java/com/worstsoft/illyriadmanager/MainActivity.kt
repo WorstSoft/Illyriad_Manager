@@ -1,14 +1,19 @@
 package com.worstsoft.illyriadmanager
 
-import android.app.Dialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.navigation.NavigationView
 import com.worstsoft.illyriadmanager.dialogs.InsertDataDialog
+import com.worstsoft.illyriadmanager.fragments.MainMenuFragment
+import com.worstsoft.illyriadmanager.fragments.NotificationFragment
 import com.worstsoft.illyriadmanager.util.NotificationAdapter
 import com.worstsoft.illyriadmanager.util.XMLParser
 import io.ktor.client.*
@@ -17,68 +22,56 @@ import io.ktor.client.request.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
-    private val TAG: String = "MainActivity"
-    private var timeout: Boolean = false
-    private var swipe: SwipeRefreshLayout? = null
-    private var apiKey: String = ""
+    private var actionBarDrawerToggle: ActionBarDrawerToggle? = null
+    private val notificationFragment: NotificationFragment = NotificationFragment()
+    private val mainMenuFragment: MainMenuFragment = MainMenuFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        swipe = findViewById(R.id.refresh_layout)
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.main_fragment_container, mainMenuFragment)
+            commit()
+        }
 
-        val prefs: SharedPreferences = getSharedPreferences("apiKey", MODE_PRIVATE)
-        if (prefs.getString("key", null) == null || prefs.getString("key", "").equals("")) {
-            val dialog: InsertDataDialog = InsertDataDialog(object : Callbacks.NotificationCallback {
-                override fun execute(apiKey: String, callback: Callbacks.NotificationDialogCallback): Unit {
-                    this@MainActivity.apiKey = apiKey
-                    GlobalScope.launch {
-                        try {
-                            fetchDataNotification()
-                            swipe!!.setOnRefreshListener {
-                                Log.d(TAG, "Fetching")
-                                GlobalScope.launch {
-                                    fetchDataNotification()
-                                }
-                            }
-                            callback.onComplete()
-                        } catch (err: NoSuchFieldException) {
-                            swipe!!.setOnRefreshListener(null)
-                            callback.onFailure()
-                        }
+        val drawerLayout = findViewById<DrawerLayout>(R.id.main_drawer_layout)
+        actionBarDrawerToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
+        findViewById<NavigationView>(R.id.main_navigation).setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.main_menu_item -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.main_fragment_container, mainMenuFragment)
+                        commit()
                     }
+                    true
                 }
-            })
-
-            dialog.show(supportFragmentManager,"dialog")
-        } else {
-            apiKey = prefs.getString("key", null)!!
-            GlobalScope.launch {
-                fetchDataNotification()
-                swipe!!.setOnRefreshListener {
-                    Log.d(TAG, "Fetching")
-                    GlobalScope.launch {
-                        fetchDataNotification()
+                R.id.notification_item -> {
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.main_fragment_container, notificationFragment)
+                        commit()
                     }
+                    true
                 }
+                R.id.mail_item -> {
+                    true
+                }
+                else -> false
             }
         }
+        drawerLayout.addDrawerListener(actionBarDrawerToggle!!)
+        actionBarDrawerToggle?.syncState()
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     }
 
-    suspend fun fetchDataNotification() {
-        val data = XMLParser.getNotification(apiKey)
-        val adapter = NotificationAdapter(data.reversed())
-        runOnUiThread {
-            val recyclerView = findViewById<RecyclerView>(R.id.recycler)
-            if (recyclerView.adapter == null) recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
-            recyclerView.adapter = adapter
-            if (swipe!!.isRefreshing) swipe!!.isRefreshing = false
-        }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (actionBarDrawerToggle!!.onOptionsItemSelected(item)) return true
+        return super.onOptionsItemSelected(item)
     }
+
+
 }

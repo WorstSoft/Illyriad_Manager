@@ -37,9 +37,11 @@ class NotificationAdapter(private val data: List<NotificationModel>) : RecyclerV
             NotificationModel.NotificationType.TRADE_CARAVAN_IN -> "Trade Caravan Going In"
             NotificationModel.NotificationType.ALLIANCE_INVITATION -> "An Alliance Invitation"
             NotificationModel.NotificationType.HARVEST_CARAVAN_IN -> "Harvest Caravan Going In"
+            NotificationModel.NotificationType.ARMY_ARRIVED -> "Army Arrived"
             NotificationModel.NotificationType.QUEST_ACCEPTED -> "Quest Accepted"
             NotificationModel.NotificationType.HARVEST_CARAVAN_DISAPPOINTED -> "Harvest Caravan/Cotter Disappointed"
             NotificationModel.NotificationType.HARVEST_CARAVAN_START -> "Harvest Caravan/Cotter Start Harvesting"
+            NotificationModel.NotificationType.ARMY_DISPATCHED -> "Army Dispatched"
             NotificationModel.NotificationType.INVALID_NOTIFICATION -> "ERROR : TYPE NOT FOUND"
         }
     }

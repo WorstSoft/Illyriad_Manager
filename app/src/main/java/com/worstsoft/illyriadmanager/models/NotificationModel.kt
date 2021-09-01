@@ -15,9 +15,11 @@ data class NotificationModel(val notificationId: Int,
         TRADE_CARAVAN_IN(13),
         ALLIANCE_INVITATION(15),
         HARVEST_CARAVAN_IN(36),
+        ARMY_ARRIVED(42),
         QUEST_ACCEPTED(44),
         HARVEST_CARAVAN_DISAPPOINTED(45),
         HARVEST_CARAVAN_START(48),
+        ARMY_DISPATCHED(68),
         INVALID_NOTIFICATION(1000);
 
         companion object {
@@ -30,9 +32,11 @@ data class NotificationModel(val notificationId: Int,
                     13 -> TRADE_CARAVAN_IN
                     15 -> ALLIANCE_INVITATION
                     36 -> HARVEST_CARAVAN_IN
+                    42 -> ARMY_ARRIVED
                     44 -> QUEST_ACCEPTED
                     45 -> HARVEST_CARAVAN_DISAPPOINTED
                     48 -> HARVEST_CARAVAN_START
+                    68 -> ARMY_DISPATCHED
                     else -> INVALID_NOTIFICATION
                 }
             }
